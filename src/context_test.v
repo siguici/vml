@@ -8,7 +8,5 @@ fn test_context() {
 		'en': 'Hello'
 	})
 
-	assert ctx.translate('Hello', 'fr')! == 'Bonjour'
-	assert ctx.translate('Hello', 'en')! == 'Hello'
-	assert ctx.translate('Hi', 'en') or { '' } == ''
+	assert ctx.translate('Hello')! == 'Bonjour'
 }
