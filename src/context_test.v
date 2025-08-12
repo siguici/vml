@@ -1,7 +1,7 @@
 module vml
 
 fn test_context() {
-	mut ctx := new_context('fr')
+	mut ctx := context('fr')
 
 	ctx.translations['Hello'] = Translations({
 		'fr': 'Bonjour'

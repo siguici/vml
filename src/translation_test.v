@@ -1,12 +1,12 @@
 module vml
 
 fn test_translator() {
-	mut tm := new_translator()
+	mut t := translator()
 
-	tm.add_translation('Hello', 'fr', 'Bonjour')
-	tm.add_translation('Hello', 'en', 'Hello')
+	t.add_translation('Hello', 'fr', 'Bonjour')
+	t.add_translation('Hello', 'en', 'Hello')
 
-	assert tm.translate('Hello', 'fr')! == 'Bonjour'
-	assert tm.translate('Hello', 'en')! == 'Hello'
-	assert tm.translate('Hi', 'en') or { '' } == ''
+	assert t.translate('Hello', 'fr')! == 'Bonjour'
+	assert t.translate('Hello', 'en')! == 'Hello'
+	assert t.translate('Hi', 'en') or { '' } == ''
 }

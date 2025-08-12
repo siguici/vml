@@ -5,7 +5,7 @@ pub struct Context {
 	locale string
 }
 
-pub fn new_context(locale string) Context {
+pub fn context(locale string) Context {
 	return Context{
 		locale: locale
 	}
