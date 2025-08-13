@@ -1,5 +1,7 @@
 module vml
 
+import veb { RawHtml }
+
 pub struct Builder {
 pub mut:
 	context    Context
@@ -18,14 +20,20 @@ pub fn (mut b Builder) add(name string, comp_fn ComponentFn) Builder {
 	return b
 }
 
-pub fn (b &Builder) component(name string, attributes Attributes, slots Slots) ?string {
+pub fn (b &Builder) component(name string, attributes Attributes, slots Slots) RawHtml {
 	if comp_fn := b.components[name] {
-		node := comp_fn(attributes, slots, b.context)
-
-		return node.render(b.context)
+		return comp_fn(attributes, slots, b.context)
 	}
 
-	return none
+	return ''
+}
+
+pub fn (b &Builder) element(name string, attributes Attributes, nodes ...Node) RawHtml {
+	return element(name, attributes, ...nodes).render(b.context)
+}
+
+pub fn (b &Builder) document(root Node, doctype DocType) RawHtml {
+	return document(root, doctype).render(b.context)
 }
 
 pub fn (mut b Builder) add_translation(phrase string, locale string, translation string) Builder {
@@ -34,6 +42,6 @@ pub fn (mut b Builder) add_translation(phrase string, locale string, translation
 	return b
 }
 
-pub fn (b Builder) translate(phrase string) ?string {
-	return b.context.translate(phrase)
+pub fn (b Builder) translate(phrase string) string {
+	return b.context.translate(phrase) or { phrase }
 }
