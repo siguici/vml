@@ -5,9 +5,15 @@ pub struct Context {
 	locale string
 }
 
-pub fn context(locale string) Context {
+@[params]
+pub struct ContextParams {
+	translations GlobalTranslations
+}
+
+pub fn context(locale string, params ContextParams) Context {
 	return Context{
-		locale: locale
+		locale:     locale
+		Translator: Translator{params.translations}
 	}
 }
 
