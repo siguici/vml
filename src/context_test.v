@@ -10,5 +10,5 @@ fn test_context() {
 		}
 	)
 
-	assert ctx.translate('Hello')! == 'Bonjour'
+	assert ctx.translate('Hello') == 'Bonjour'
 }

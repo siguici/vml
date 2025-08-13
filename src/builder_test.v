@@ -8,16 +8,15 @@ fn test_builder() {
 	b.add_translation('Hello', 'fr', 'Bonjour')
 	b.add_translation('Hello', 'en', 'Hello')
 
-	b.add('greeting', fn [b] (attributes Attributes, slots Slots, ctx &Context) RawHtml {
-		msg := attributes['msg'] or { 'Hello' }
-		return b.element('h1', Attributes(map[string]string{}), slots['title']) +
-			b.element('p', Attributes(map[string]string{}), slots['content'])
+	b.add('greeting', fn [b] (props Attributes, slots Slots, ctx &Context) RawHtml {
+		msg := props['msg'] or { 'Hello' }
+		return b.element('h1', {}, slots['title'] or { '' }) + b.element('p', {}, slots['content'] or { '' })
 	})
 
-	assert b.component('greeting', Attributes({
+	assert b.component('greeting', {
 		'msg': 'Hello'
-	}), Slots({
-		'title':   Node(text('title'))
-		'content': Node(text('content'))
-	})) == '<h1>title</h1><p>content</p>'
+	}, {
+		'title':   'Title'
+		'content': 'Content'
+	}) == '<h1>title</h1><p>content</p>'
 }

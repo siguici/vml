@@ -1,54 +1,72 @@
 module vml
 
 pub struct Element {
-	name       string @[required]
+	name string @[required]
+mut:
 	attributes Attributes
-	children   []Node
+	children   Children
 }
 
-pub fn element(name string, attributes Attributes, nodes ...Node) Element {
-	return Element{name, attributes, nodes}
+pub fn Element.new(name string, attrs map[string]Value, contents ...Content) Element {
+	return Element{name, Attributes(attrs), Children(contents)}
 }
 
-pub fn (e Element) render(ctx &Context) string {
-	mut s := '<${e.name}${render_attributes(e.attributes)}'
+pub fn element(name string, attrs map[string]Value, contents ...Content) Element {
+	return Element.new(name, attrs, contents)
+}
 
-	if is_orphan(e.name) {
-		s += '/>'
+pub fn (mut elt Element) add_attributes(attrs map[string]Value) Element {
+	for name, value in attrs {
+		elt.add_attribute(name, value)
+	}
+	return elt
+}
+
+pub fn (mut elt Element) add_attribute(name string, value Value) Element {
+	elt.attributes[name] = value
+	return elt
+}
+
+pub fn (elt Element) render(ctx &Context) string {
+	mut render := '<${elt.name}${elt.attributes.render(ctx)}'
+	if is_orphan(elt.name) {
+		render += '/>'
 	} else {
-		s += '>'
-		for child in e.children {
-			s += child.render(ctx)
-		}
-		s += '</${e.name}>'
+		render += '>${elt.children.render(ctx)}</${elt.name}>'
 	}
-
-	return s
+	return render
 }
 
-fn render_attributes(attributes Attributes) string {
-	mut s := ''
-	for k, v in attributes {
-		s += ' ${k}="${v}"'
+pub fn (elts []Element) render(ctx Context) string {
+	mut render := ''
+	for elt in elts {
+		render += elt.render(ctx)
 	}
-	return s
+	return render
 }
 
-fn is_orphan(name string) bool {
-	return name in [
-		'area',
-		'base',
-		'br',
-		'col',
-		'embed',
-		'hr',
-		'img',
-		'input',
-		'link',
-		'meta',
-		'param',
-		'source',
-		'track',
-		'wbr',
-	]
+pub fn (children Children) render(ctx Context) string {
+	mut render := ''
+	for child in children {
+		render += child.render(ctx)
+	}
+	return render
+}
+
+pub fn (content Content) render(ctx Context) string {
+	if content is string {
+		return content
+	} else if content is []Node {
+		return content.render(ctx)
+	} else {
+		return ''
+	}
+}
+
+pub fn (nodes []Node) render(ctx Context) string {
+	mut render := ''
+	for node in nodes {
+		render += node.render(ctx)
+	}
+	return render
 }

@@ -17,6 +17,6 @@ pub fn context(locale string, params ContextParams) Context {
 	}
 }
 
-pub fn (ctx &Context) translate(phrase string) ?string {
-	return ctx.Translator.translate(phrase, ctx.locale)
+pub fn (ctx &Context) translate(phrase string) string {
+	return ctx.Translator.translate(phrase, ctx.locale) or { phrase }
 }

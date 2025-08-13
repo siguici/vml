@@ -1,13 +1,14 @@
 module vml
 
-import veb
-
 pub type Translations = map[string]string
 pub type GlobalTranslations = map[string]Translations
 
-pub type Attributes = map[string]string
-pub type Slots = map[string]Node
-pub type ComponentFn = fn (attributes Attributes, slots Slots, ctx &Context) string
+pub type Value = string | f32 | int | bool
+pub type Content = string | []Node
+pub type Attributes = map[string]Value
+pub type Children = []Content
+pub type Slots = map[string]Content
+pub type Component = fn (props Attributes, slots Slots, ctx &Context) string
 
 pub enum DocType {
 	html
