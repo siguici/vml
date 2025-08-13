@@ -1,7 +1,7 @@
 module vml
 
 pub struct Element {
-	name       string
+	name       string @[required]
 	attributes Attributes
 	children   []Node
 }
