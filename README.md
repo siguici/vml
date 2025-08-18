@@ -1,27 +1,57 @@
 # 🚀 VML — Vlang Markup Language
 
-**VML** is a lightweight, runtime template engine for **Vlang**,
-inspired by Laravel’s Blade and Vue.js.  
-It enables powerful dynamic rendering with features like includes,
-named slots, conditional directives, loops, and rich expression interpolation —
-all executed at runtime without pre-compilation! ⚡️
+**VML** is a lightweight, **runtime HTML/XML builder** for **Vlang**.
+It allows **dynamic, functional construction of documents, elements,
+and components** at runtime —
+no pre-compilation required! ⚡️
 
 ---
 
 ## ✨ Features
 
-- 🔹 Blade- and Vue-like syntax, familiar to Vlang developers  
-- 🔹 Dynamic template includes with `@use`  
-- 🔹 Named slots via `@slot ... @endslot` blocks
-for flexible component content injection  
-- 🔹 Conditional rendering: `@if`, `@elseif`, `@else`, `@endif`  
-- 🔹 Loops with `@for ... @endfor`  
-- 🔹 Variable interpolation: `$var`,
-including access to struct properties/methods (`$obj.prop`, `$obj.method()`)  
-- 🔹 Inline expression evaluation: `${expr}` and `@{expr}`  
-- 🔹 Escape directives with `@@`  
-- 🔹 Pure runtime rendering — no compile-time generation needed  
-- 🔹 Context passed as a generic map or struct for flexible data binding
+* 🔹 **Elements** (`builder.element` / `builder.e`)
+  Create standard HTML/XML tags dynamically with attributes and children.
+
+  ```v
+  b.element('div', { 'class': 'container' }, b.text('Hello World!'))
+  ```
+
+* 🔹 **Components** (`builder.component` / `builder.c`)
+  Reusable building blocks with props and named slots.
+
+  ```v
+  b.component('card', { 'title': 'My Card' }, { 'content': b.text('Card content') })
+  ```
+
+* 🔹 **Documents** (`builder.document` / `builder.d`)
+  Build entire HTML/XML documents with doctype, root node, and charset.
+
+  ```v
+  b.document(root_node, .html5)
+  ```
+
+* 🔹 **Text & Translations** (`builder.text` / `builder.t`)
+  Render text with optional translation support;
+  global translations can be added dynamically.
+
+  ```v
+  b.add_translation('Welcome', 'fr', 'Bienvenue')
+  b.text('Welcome', TextParams{})
+  ```
+
+* 🔹 **Directives** (`builder.directive`)
+  Apply behaviors or conditional logic to elements and components at runtime.
+
+* 🔹 **Fluent API & Aliases**
+  Short aliases for DX:
+
+  * `b.e` → `b.element`
+  * `b.c` → `b.component`
+  * `b.d` → `b.document`
+  * `b.t` → `b.text`
+
+* 🔹 **Functional & Runtime-first**
+  Chainable methods, minimal boilerplate, and fully runtime execution.
 
 ---
 
@@ -50,53 +80,53 @@ Module {
 
 ---
 
-## 🚀 Quick Start
+## ⚡ Example
 
 ```v
-import siguici.vml
+import vml
+import veb { RawHtml }
 
-fn main() {
-    ctx := {
-        'title': 'Welcome to VML!',
-        'user': {
-            'name': 'Emmanuel'
-        }
-    }
+mut vml := vml.builder(vml.context('en'))
 
-    output := vml.render_file('templates/welcome.vml', ctx)
-    println(output)
-}
-```
+vml.add_translation('Hello World', 'fr', 'Bonjour le monde')
 
-### Example template: `templates/welcome.vml`
+html := vml.document(
+  vml.element('html', {}, [
+    vml.component('header', {}, { 'title': 'Welcome' }),
+    vml.element('body', {}, [
+      vml.component('card', { 'title': 'My Card' }, { 'content': vml.text('Card content') })
+    ])
+  ]),
+  .html
+)
 
-```vml
-@use 'header.vml'
-
-<h1>$title</h1>
-
-@if $user
-  <p>Hello, $user.name! 👋</p>
-@endif
-
-@use 'footer.vml'
+println(html)
 ```
 
 ---
 
-## 🛠 Usage Overview
+## 🛠 API Usage Overview
 
-| Feature      | Syntax Example                                              | Description                       |
-| ------------ | ----------------------------------------------------------- | --------------------------------- |
-| Include      | `@use 'component.vml'`                                      | Import templates or components    |
-| Slots        | `@slot default ... @endslot`                                | Named content slots in components |
-| Conditionals | `@if $user.is_admin ... @endif`                             | Conditional rendering             |
-| Loops        | `@for $item in $items ... @endfor`                          | Loop over lists or arrays         |
-| Variables    | `$user.name`, `$count`                                      | Access context variables          |
-| Expressions  | `${$price * $qty}`, `@{$user.age > 18 ? "Adult" : "Minor"}` | Inline expressions                |
-| Escape `@`   | `@@if`                                                      | Print literal `@if`               |
+| Method                                                 | Alias | Description                           |
+| ------------------------------------------------------ | ----- | ------------------------------------- |
+| `builder.element(name, attrs, contents...)`            | `e`   | Create a standard element             |
+| `builder.component(name, props, slots)`                | `c`   | Render a reusable component           |
+| `builder.document(root, doctype)`                      | `d`   | Render a full document                |
+| `builder.text(value, params)`                          | `t`   | Render text with optional translation |
+| `builder.add_translation(phrase, locale, translation)` | -     | Add global translation                |
+| `builder.translate(phrase)`                            | -     | Get translated phrase                 |
 
 ---
+
+## 💡 Philosophy
+
+* **Runtime first**: no compilation, everything is built programmatically.
+* **Fluent API**: concise, chainable methods for faster development.
+* **Functional**: encourages composable elements, components, and slots.
+* **Global translations**: manage multilingual content seamlessly.
+
+**Not a template engine** — VML focuses on **functional runtime construction of HTML/XML**
+with reusable components, slots, and translations.
 
 ## 🤝 Contributing
 
@@ -111,13 +141,8 @@ Distributed under the MIT License. See `LICENSE` for details.
 
 ---
 
-## 💡 About
+VML is **not a template engine**: it focuses on **functional,
+runtime construction of HTML/XML** with reusable components,
+slots, and translations.
 
-VML (Vlang Markup Language) is designed to provide a **runtime template engine**
-tailored for Vlang’s simplicity and performance needs,
-enabling developers to write clean, maintainable, and flexible views
-that separate logic from presentation effortlessly.
-
----
-
-Happy templating! 🎉
+## Happy building! 🎉
