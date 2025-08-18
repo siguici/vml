@@ -1,6 +1,5 @@
 module vml
 
-import json
 import veb { RawHtml }
 
 pub struct Builder {
@@ -21,13 +20,9 @@ pub fn (mut b Builder) add(name string, component Component) Builder {
 	return b
 }
 
-pub fn (b &Builder) component(name string, props_str string) RawHtml {
+pub fn (b &Builder) component(name string, args ...Value) RawHtml {
 	if component := b.components[name] {
-		props := json.decode(map[string]string, props_str) or {
-			eprintln('[VML] Props `${props_str}` decoding error: ${err.msg()} ')
-			map[string]string{}
-		}
-		return component(Props(props), b.context)
+		return component(b.context, ...args)
 	}
 
 	return ''
@@ -37,11 +32,7 @@ pub fn (b &Builder) text(value string) RawHtml {
 	return text(value).render(b.context)
 }
 
-pub fn (b &Builder) element(name string, attributes_str string, contents ...Content) RawHtml {
-	attributes := json.decode(map[string]Value, attributes_str) or {
-		eprintln('[VML] Attributes `${attributes_str}` decoding error: ${err.msg()} ')
-		map[string]Value{}
-	}
+pub fn (b &Builder) element(name string, attributes map[string]Value, contents ...Content) RawHtml {
 	return element(name, attributes, ...contents).render(b.context)
 }
 
@@ -53,7 +44,7 @@ pub fn (b &Builder) t(value string) RawHtml {
 	return b.text(value)
 }
 
-pub fn (b &Builder) e(name string, attributes string, contents ...Content) RawHtml {
+pub fn (b &Builder) e(name string, attributes map[string]Value, contents ...Content) RawHtml {
 	return b.element(name, attributes, ...contents)
 }
 
@@ -61,8 +52,8 @@ pub fn (b &Builder) d(root Node) RawHtml {
 	return b.document(root)
 }
 
-pub fn (b &Builder) c(name string, props string) RawHtml {
-	return b.component(name, props)
+pub fn (b &Builder) c(name string, props ...Value) RawHtml {
+	return b.component(name, ...props)
 }
 
 pub fn (mut b Builder) add_translation(phrase string, locale string, translation string) Builder {

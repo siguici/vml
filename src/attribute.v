@@ -18,6 +18,8 @@ pub fn (attr Attribute) render(ctx Context) string {
 		'${attr.name}="${ctx.translate(attr.value)}"'
 	} else if attr.value is int {
 		attr.value.str()
+	} else if attr.value is f32 {
+		attr.value.str()
 	} else if attr.value is bool && attr.value {
 		'${attr.name}'
 	} else {
