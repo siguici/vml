@@ -28,6 +28,10 @@ pub fn (b &Builder) component(name string, props map[string]Value, slots map[str
 	return ''
 }
 
+pub fn (b &Builder) text(value string, params TextParams) RawHtml {
+	return text(value, params).render(b.context)
+}
+
 pub fn (b &Builder) element(name string, attributes map[string]Value, contents ...Content) RawHtml {
 	return element(name, attributes, ...contents).render(b.context)
 }
