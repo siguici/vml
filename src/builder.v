@@ -40,6 +40,22 @@ pub fn (b &Builder) document(root Node, doctype DocType) RawHtml {
 	return document(root, doctype).render(b.context)
 }
 
+pub fn (b &Builder) t(value string, params TextParams) RawHtml {
+	return b.text(value, params)
+}
+
+pub fn (b &Builder) e(name string, attributes map[string]Value, contents ...Content) RawHtml {
+	return b.element(name, attributes, contents)
+}
+
+pub fn (b &Builder) d(root Node, doctype DocType) RawHtml {
+	return b.document(root, doctype)
+}
+
+pub fn (b &Builder) c(name string, props map[string]Value, slots map[string]Content) RawHtml {
+	return b.component(name, props, slots)
+}
+
 pub fn (mut b Builder) add_translation(phrase string, locale string, translation string) Builder {
 	b.context.add_translation(phrase, locale, translation)
 
