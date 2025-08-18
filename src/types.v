@@ -3,12 +3,13 @@ module vml
 pub type Translations = map[string]string
 pub type GlobalTranslations = map[string]Translations
 
-pub type Value = string | f32 | int | bool
+pub type Value = string | int | bool
 pub type Content = string | []Node
 pub type Attributes = map[string]Value
 pub type Children = []Content
 pub type Slots = map[string]Content
-pub type Component = fn (props Attributes, slots Slots, ctx &Context) string
+pub type Props = map[string]string
+pub type Component = fn (props Props, ctx &Context) string
 
 pub enum DocType {
 	html

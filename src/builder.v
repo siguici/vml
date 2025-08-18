@@ -1,5 +1,6 @@
 module vml
 
+import json
 import veb { RawHtml }
 
 pub struct Builder {
@@ -20,40 +21,48 @@ pub fn (mut b Builder) add(name string, component Component) Builder {
 	return b
 }
 
-pub fn (b &Builder) component(name string, props map[string]Value, slots map[string]Content) RawHtml {
+pub fn (b &Builder) component(name string, props_str string) RawHtml {
 	if component := b.components[name] {
-		return component(Attributes(props), Slots(slots), b.context)
+		props := json.decode(map[string]string, props_str) or {
+			eprintln('[VML] Props `${props_str}` decoding error: ${err.msg()} ')
+			map[string]string{}
+		}
+		return component(Props(props), b.context)
 	}
 
 	return ''
 }
 
-pub fn (b &Builder) text(value string, params TextParams) RawHtml {
-	return text(value, params).render(b.context)
+pub fn (b &Builder) text(value string) RawHtml {
+	return text(value).render(b.context)
 }
 
-pub fn (b &Builder) element(name string, attributes map[string]Value, contents ...Content) RawHtml {
+pub fn (b &Builder) element(name string, attributes_str string, contents ...Content) RawHtml {
+	attributes := json.decode(map[string]Value, attributes_str) or {
+		eprintln('[VML] Attributes `${attributes_str}` decoding error: ${err.msg()} ')
+		map[string]Value{}
+	}
 	return element(name, attributes, ...contents).render(b.context)
 }
 
-pub fn (b &Builder) document(root Node, doctype DocType) RawHtml {
-	return document(root, doctype).render(b.context)
+pub fn (b &Builder) document(root Node) RawHtml {
+	return document(root, .html).render(b.context)
 }
 
-pub fn (b &Builder) t(value string, params TextParams) RawHtml {
-	return b.text(value, params)
+pub fn (b &Builder) t(value string) RawHtml {
+	return b.text(value)
 }
 
-pub fn (b &Builder) e(name string, attributes map[string]Value, contents ...Content) RawHtml {
-	return b.element(name, attributes, contents)
+pub fn (b &Builder) e(name string, attributes string, contents ...Content) RawHtml {
+	return b.element(name, attributes, ...contents)
 }
 
-pub fn (b &Builder) d(root Node, doctype DocType) RawHtml {
-	return b.document(root, doctype)
+pub fn (b &Builder) d(root Node) RawHtml {
+	return b.document(root)
 }
 
-pub fn (b &Builder) c(name string, props map[string]Value, slots map[string]Content) RawHtml {
-	return b.component(name, props, slots)
+pub fn (b &Builder) c(name string, props string) RawHtml {
+	return b.component(name, props)
 }
 
 pub fn (mut b Builder) add_translation(phrase string, locale string, translation string) Builder {
