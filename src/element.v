@@ -12,7 +12,7 @@ pub fn Element.new(name string, attrs map[string]Value, contents ...Content) Ele
 }
 
 pub fn element(name string, attrs map[string]Value, contents ...Content) Element {
-	return Element.new(name, attrs, contents)
+	return Element.new(name, attrs, ...contents)
 }
 
 pub fn (mut elt Element) add_attributes(attrs map[string]Value) Element {

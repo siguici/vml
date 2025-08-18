@@ -10,7 +10,9 @@ fn test_builder() {
 
 	b.add('greeting', fn [b] (props Attributes, slots Slots, ctx &Context) RawHtml {
 		msg := props['msg'] or { 'Hello' }
-		return b.element('h1', {}, slots['title'] or { '' }) + b.element('p', {}, slots['content'] or { '' })
+		return b.element('h1', {}, slots['title'] or { '' }) + b.element('p', {}, slots['content'] or {
+			''
+		})
 	})
 
 	assert b.component('greeting', {
@@ -18,5 +20,5 @@ fn test_builder() {
 	}, {
 		'title':   'Title'
 		'content': 'Content'
-	}) == '<h1>title</h1><p>content</p>'
+	}) == '<h1>Title</h1><p>Content</p>'
 }
