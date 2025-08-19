@@ -48,22 +48,6 @@ pub fn (b &Builder) document(root Node) RawHtml {
 	return document(root, .html).render(b.context)
 }
 
-pub fn (b &Builder) t(value string) RawHtml {
-	return b.text(value)
-}
-
-pub fn (b &Builder) e(name string, attributes map[string]Value, contents ...Content) RawHtml {
-	return b.element(name, attributes, ...contents)
-}
-
-pub fn (b &Builder) d(root Node) RawHtml {
-	return b.document(root)
-}
-
-pub fn (b &Builder) c[T](name string, props T) RawHtml {
-	return b.component[T](name, props)
-}
-
 pub fn (mut b Builder) add_translation(phrase string, locale string, translation string) Builder {
 	b.context.add_translation(phrase, locale, translation)
 
