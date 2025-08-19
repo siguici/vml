@@ -1,11 +1,15 @@
 module vml
 
-import veb { RawHtml }
-
-type TestBuilderProps = TestComponentProps
+interface TestBuilderProps {
+}
 
 @[params]
-struct TestComponentProps {
+struct TestHelloProps {
+	name string = 'World'
+}
+
+@[params]
+struct TestGreetingProps {
 	title   string
 	content string
 }
@@ -16,9 +20,19 @@ fn test_builder() {
 	b.add_translation('Hello', 'fr', 'Bonjour')
 	b.add_translation('Hello', 'en', 'Hello')
 
-	b.add('greeting', fn [b] (ctx &Context, props TestComponentProps) RawHtml {
-		return b.element('h1', {}, props.title) + b.element('p', {}, props.content)
+	b.add('hello', fn [b] (ctx &Context, props TestBuilderProps) string {
+		return if props is TestHelloProps { b.text('Hello') + b.text(' ${props.name}') } else { '' }
 	})
 
-	assert b.component('greeting', TestComponentProps{ title: 'Title', content: 'Content' }) == '<h1>Title</h1><p>Content</p>'
+	b.add('greeting', fn [b] (ctx &Context, props TestBuilderProps) string {
+		return if props is TestGreetingProps {
+			b.element('h1', {}, props.title) + b.element('p', {}, props.content)
+		} else {
+			''
+		}
+	})
+
+	assert b.component('hello', TestHelloProps{}) == 'Bonjour World'
+	assert b.component('hello', TestHelloProps{ name: 'Bob' }) == 'Bonjour Bob'
+	assert b.component('greeting', TestGreetingProps{ title: 'Title', content: 'Content' }) == '<h1>Title</h1><p>Content</p>'
 }
