@@ -12,7 +12,7 @@ struct TestGreetingProps {
 }
 
 fn test_builder() {
-	mut b := builder(context('fr'))
+	mut b := builder(locale: 'fr')
 
 	b.add_translation('Hello', 'fr', 'Bonjour')
 	b.add_translation('Hello', 'en', 'Hello')

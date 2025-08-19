@@ -1,12 +1,13 @@
 module vml
 
 fn test_text() {
-	t := text('Hello',
+	t := text('Hi',
 		translations: Translations({
 			'fr': 'Bonjour'
+			'en': 'Hello'
 		})
 	)
 
-	assert t.render(context('fr')) == 'Bonjour'
-	assert t.render(context('en')) == 'Hello'
+	assert t.render(locale: 'fr') == 'Bonjour'
+	assert t.render(locale: 'en') == 'Hello'
 }

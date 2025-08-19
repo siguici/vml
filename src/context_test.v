@@ -1,7 +1,8 @@
 module vml
 
 fn test_context() {
-	mut ctx := context('fr',
+	mut ctx := context(
+		locale:       'fr'
 		translations: {
 			'Hello': Translations({
 				'fr': 'Bonjour'

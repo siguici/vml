@@ -1,5 +1,6 @@
 module vml
 
+@[params]
 pub struct Context {
 	Translator
 	locale string
@@ -7,12 +8,13 @@ pub struct Context {
 
 @[params]
 pub struct ContextParams {
+	locale       string = 'en'
 	translations GlobalTranslations
 }
 
-pub fn context(locale string, params ContextParams) Context {
+pub fn context(params ContextParams) Context {
 	return Context{
-		locale:     locale
+		locale:     params.locale
 		Translator: Translator{params.translations}
 	}
 }

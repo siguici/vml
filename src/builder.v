@@ -8,9 +8,16 @@ pub mut:
 	components map[string]Component
 }
 
-pub fn builder(ctx Context) Builder {
+@[params]
+pub struct BuilderParams {
+	ContextParams
+	components map[string]Component
+}
+
+pub fn builder(params BuilderParams) Builder {
 	return Builder{
-		context: ctx
+		context:    context(params.ContextParams)
+		components: params.components
 	}
 }
 
