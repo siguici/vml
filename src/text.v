@@ -9,6 +9,7 @@ pub mut:
 
 @[params]
 pub struct TextParams {
+pub mut:
 	translations Translations
 }
 

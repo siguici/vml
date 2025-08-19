@@ -8,6 +8,7 @@ pub struct Context {
 
 @[params]
 pub struct ContextParams {
+pub mut:
 	locale       string = 'en'
 	translations GlobalTranslations
 }

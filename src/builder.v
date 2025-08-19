@@ -11,6 +11,7 @@ pub mut:
 @[params]
 pub struct BuilderParams {
 	ContextParams
+pub mut:
 	components map[string]Component
 }
 
