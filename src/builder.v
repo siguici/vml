@@ -28,7 +28,7 @@ pub fn (mut b Builder) add(name string, component Component) Builder {
 	return b
 }
 
-pub fn (b &Builder) component[T](name string, props T) RawHtml {
+pub fn (b &Builder) use[T](name string, props T) RawHtml {
 	if component := b.components[name] {
 		return component(b.context, props)
 	}

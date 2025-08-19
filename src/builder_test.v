@@ -29,7 +29,7 @@ fn test_builder() {
 		}
 	})
 
-	assert b.component('hello', TestHelloProps{}) == 'Bonjour World'
-	assert b.component('hello', TestHelloProps{ name: 'Bob' }) == 'Bonjour Bob'
-	assert b.component('greeting', TestGreetingProps{ title: 'Title', content: 'Content' }) == '<h1>Title</h1><p>Content</p>'
+	assert b.use('hello', TestHelloProps{}) == 'Bonjour World'
+	assert b.use('hello', TestHelloProps{ name: 'Bob' }) == 'Bonjour Bob'
+	assert b.use('greeting', TestGreetingProps{ title: 'Title', content: 'Content' }) == '<h1>Title</h1><p>Content</p>'
 }
