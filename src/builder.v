@@ -2,66 +2,66 @@ module vml
 
 import veb { RawHtml }
 
-pub struct Builder[T] {
+pub struct Builder {
 pub mut:
 	context    Context
-	components map[string]Component[T]
+	components map[string]Component
 }
 
-pub fn builder[T](ctx Context) Builder[T] {
-	return Builder[T]{
+pub fn builder(ctx Context) Builder {
+	return Builder{
 		context: ctx
 	}
 }
 
-pub fn (mut b Builder[T]) add[T](name string, component Component[T]) Builder[T] {
+pub fn (mut b Builder) add(name string, component Component) Builder {
 	b.components[name] = component
 
 	return b
 }
 
-pub fn (b &Builder[T]) component[U](name string, props U) RawHtml {
+pub fn (b &Builder) component[T](name string, props T) RawHtml {
 	if component := b.components[name] {
-		return component[U](b.context, props)
+		return component(b.context, props)
 	}
 
 	return ''
 }
 
-pub fn (b &Builder[T]) text(value string) RawHtml {
+pub fn (b &Builder) text(value string) RawHtml {
 	return text(value).render(b.context)
 }
 
-pub fn (b &Builder[T]) element(name string, attributes map[string]Value, contents ...Content) RawHtml {
+pub fn (b &Builder) element(name string, attributes map[string]Value, contents ...Content) RawHtml {
 	return element(name, attributes, ...contents).render(b.context)
 }
 
-pub fn (b &Builder[T]) document(root Node) RawHtml {
+pub fn (b &Builder) document(root Node) RawHtml {
 	return document(root, .html).render(b.context)
 }
 
-pub fn (b &Builder[T]) t(value string) RawHtml {
+pub fn (b &Builder) t(value string) RawHtml {
 	return b.text(value)
 }
 
-pub fn (b &Builder[T]) e(name string, attributes map[string]Value, contents ...Content) RawHtml {
+pub fn (b &Builder) e(name string, attributes map[string]Value, contents ...Content) RawHtml {
 	return b.element(name, attributes, ...contents)
 }
 
-pub fn (b &Builder[T]) d(root Node) RawHtml {
+pub fn (b &Builder) d(root Node) RawHtml {
 	return b.document(root)
 }
 
-pub fn (b &Builder[T]) c[T](name string, props T) RawHtml {
+pub fn (b &Builder) c[T](name string, props T) RawHtml {
 	return b.component[T](name, props)
 }
 
-pub fn (mut b Builder[T]) add_translation(phrase string, locale string, translation string) Builder[T] {
+pub fn (mut b Builder) add_translation(phrase string, locale string, translation string) Builder {
 	b.context.add_translation(phrase, locale, translation)
 
 	return b
 }
 
-pub fn (b Builder[T]) translate(phrase string) string {
+pub fn (b Builder) translate(phrase string) string {
 	return b.context.translate(phrase)
 }

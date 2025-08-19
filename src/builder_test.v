@@ -1,8 +1,5 @@
 module vml
 
-interface TestBuilderProps {
-}
-
 @[params]
 struct TestHelloProps {
 	name string = 'World'
@@ -15,16 +12,16 @@ struct TestGreetingProps {
 }
 
 fn test_builder() {
-	mut b := builder[TestBuilderProps](context('fr'))
+	mut b := builder(context('fr'))
 
 	b.add_translation('Hello', 'fr', 'Bonjour')
 	b.add_translation('Hello', 'en', 'Hello')
 
-	b.add('hello', fn [b] (ctx &Context, props TestBuilderProps) string {
+	b.add('hello', fn [b] (ctx &Context, props Props) string {
 		return if props is TestHelloProps { b.text('Hello') + b.text(' ${props.name}') } else { '' }
 	})
 
-	b.add('greeting', fn [b] (ctx &Context, props TestBuilderProps) string {
+	b.add('greeting', fn [b] (ctx &Context, props Props) string {
 		return if props is TestGreetingProps {
 			b.element('h1', {}, props.title) + b.element('p', {}, props.content)
 		} else {
