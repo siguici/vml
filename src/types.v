@@ -8,7 +8,7 @@ pub type Content = string | []Node
 pub type Attributes = map[string]Value
 pub type Children = []Content
 pub type Slots = map[string]Content
-pub type Component = fn (ctx &Context, args ...Value) string
+pub type Component[T] = fn (ctx &Context, props T) string
 
 pub enum DocType {
 	html
