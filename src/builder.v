@@ -5,7 +5,7 @@ import json { encode }
 
 pub struct Builder {
 mut:
-	cache map[string]string
+	cache Cache
 pub mut:
 	context    Context
 	components map[string]Component
@@ -15,12 +15,16 @@ pub mut:
 pub struct BuilderParams {
 	ContextParams
 pub mut:
+	cache_ttl  int    = 3600
+	cache_dir  string = '.cache/vml'
+	cache_ext  string = '.html'
 	components map[string]Component
 }
 
 pub fn builder(params BuilderParams) Builder {
 	return Builder{
 		context:    context(params.ContextParams)
+		cache:      cache(params.cache_ttl, params.cache_dir, params.cache_ext)
 		components: params.components
 	}
 }
@@ -33,18 +37,17 @@ pub fn (mut b Builder) add(name string, component Component) Builder {
 
 pub fn (mut b Builder) use[T](name string, props T) RawHtml {
 	$if T is Props {
-		key := '${name}${encode(props)}'
-		if html := b.cache[key] {
+		key := cache_key('${name}${encode(props)}')
+		if html := b.cache.get(key) {
 			return html
 		}
 
 		if component := b.components[name] {
-			html := component(b.context, props)
-			b.cache[key] = html
-			return html
+			return b.cache.set(key, component(b.context, props))
 		}
 
 		eprintln('Component ${name} does not exist.')
+		return ''
 	} $else {
 		eprintln('Props must be a struct. ${T.name} given.')
 	}
