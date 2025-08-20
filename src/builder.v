@@ -1,8 +1,11 @@
 module vml
 
 import veb { RawHtml }
+import json { encode }
 
 pub struct Builder {
+mut:
+	cache map[string]string
 pub mut:
 	context    Context
 	components map[string]Component
@@ -28,9 +31,16 @@ pub fn (mut b Builder) add(name string, component Component) Builder {
 	return b
 }
 
-pub fn (b &Builder) use[T](name string, props T) RawHtml {
+pub fn (mut b Builder) use[T](name string, props T) RawHtml {
+	key := '${name}${encode(props)}'
+	if html := b.cache[key] {
+		return html
+	}
+
 	if component := b.components[name] {
-		return component(b.context, props)
+		html := component(b.context, props)
+		b.cache[key] = html
+		return html
 	}
 
 	return ''
