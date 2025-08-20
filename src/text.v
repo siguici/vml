@@ -20,11 +20,11 @@ pub fn text(value Value, params TextParams) Text {
 pub fn (t Text) render(ctx &Context) string {
 	if t.value is string {
 		if tr := t.translations[ctx.locale] {
-			return tr
+			return escape(tr, quote: false)
 		}
 
-		return ctx.translate(t.value)
+		return escape(ctx.translate(t.value), quote: false)
 	} else {
-		return t.value.str()
+		return escape(t.value.str(), quote: false)
 	}
 }

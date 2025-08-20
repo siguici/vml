@@ -1,7 +1,6 @@
 module vml
 
-import encoding.html {EscapeConfig}
-import arrays
+import encoding.html { EscapeConfig }
 
 enum EncodeMode {
 	specialchars
