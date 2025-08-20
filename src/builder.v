@@ -32,15 +32,17 @@ pub fn (mut b Builder) add(name string, component Component) Builder {
 }
 
 pub fn (mut b Builder) use[T](name string, props T) RawHtml {
-	key := '${name}${encode(props)}'
-	if html := b.cache[key] {
-		return html
-	}
+	$if T is Props {
+		key := '${name}${encode(props)}'
+		if html := b.cache[key] {
+			return html
+		}
 
-	if component := b.components[name] {
-		html := component(b.context, props)
-		b.cache[key] = html
-		return html
+		if component := b.components[name] {
+			html := component(b.context, props)
+			b.cache[key] = html
+			return html
+		}
 	}
 
 	return ''
