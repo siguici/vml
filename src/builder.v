@@ -15,16 +15,18 @@ pub mut:
 pub struct BuilderParams {
 	ContextParams
 pub mut:
-	cache_ttl  int    = 3600
-	cache_dir  string = '.cache/vml'
-	cache_ext  string = '.html'
-	components map[string]Component
+	cache_options CacheOptions = CacheOptions{
+		ttl: 3600
+		dir: '.cache/vml'
+		ext: '.html'
+	}
+	components    map[string]Component
 }
 
 pub fn builder(params BuilderParams) Builder {
 	return Builder{
 		context:    context(params.ContextParams)
-		cache:      cache(params.cache_ttl, params.cache_dir, params.cache_ext)
+		cache:      cache(params.cache_options)
 		components: params.components
 	}
 }
