@@ -43,6 +43,10 @@ pub fn (mut b Builder) use[T](name string, props T) RawHtml {
 			b.cache[key] = html
 			return html
 		}
+
+		eprintln('Component ${name} does not exist.')
+	} $else {
+		eprintln('Props must be a struct. ${T.name} given.')
 	}
 
 	return ''
